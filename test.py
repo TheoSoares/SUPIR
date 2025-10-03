@@ -82,10 +82,11 @@ for img_pth in os.listdir(args.img_dir):
     LQ_img = LQ_img.unsqueeze(0).to(SUPIR_device)[:, :3, :, :]
 
     # step 1: Pre-denoise for LLaVA, resize to 512
-    LQ_img_512, h1, w1 = PIL2Tensor(LQ_ips, upsacle=args.upscale, min_size=args.min_size, fix_resize=512)
-    LQ_img_512 = LQ_img_512.unsqueeze(0).to(SUPIR_device)[:, :3, :, :]
-    clean_imgs = model.batchify_denoise(LQ_img_512)
-    clean_PIL_img = Tensor2PIL(clean_imgs[0], h1, w1)
+    if use_llava:
+        LQ_img_512, h1, w1 = PIL2Tensor(LQ_ips, upsacle=args.upscale, min_size=args.min_size, fix_resize=512)
+        LQ_img_512 = LQ_img_512.unsqueeze(0).to(SUPIR_device)[:, :3, :, :]
+        clean_imgs = model.batchify_denoise(LQ_img_512)
+        clean_PIL_img = Tensor2PIL(clean_imgs[0], h1, w1)
 
     # step 2: LLaVA
     if use_llava:
